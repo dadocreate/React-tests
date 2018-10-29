@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Sparklines, SparklinesLine } from 'react-sparklines';
+import Charts from '../components/chart';
+import GoogleMap from '../components/google_map';
 
 class WeatherList extends Component {
   /*  eslint class-methods-use-this: ["error", { "exceptMethods": ["renderWeather"] }] */
   renderWeather(cityData) {
     const { name } = cityData.city;
-    const temps = cityData.list.map(weather => weather.main.temp);
+    const temps = cityData.list.map(weather => weather.main.temp - 273.15);
+    const pressure = cityData.list.map(weather => weather.main.pressure);
+    const humidity = cityData.list.map(weather => weather.main.humidity);
+    const { lon, lat } = cityData.city.coord;
 
     return (
       <tr key={name}>
-        <td>{name}</td>
         <td>
-          <Sparklines height={120} width={180} data={temps}>
-            <SparklinesLine color="red" />
-          </Sparklines>
+          <GoogleMap lat={lat} lon={lon} />
+        </td>
+        <td>
+          <Charts data={temps} color="orange" unit="°C" />
+        </td>
+        <td>
+          <Charts data={pressure} color="green" unit="Pa" />
+        </td>
+        <td>
+          <Charts data={humidity} color="blue" unit="%" />
         </td>
       </tr>
     );
